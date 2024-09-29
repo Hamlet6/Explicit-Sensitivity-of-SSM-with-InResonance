@@ -120,7 +120,6 @@ switch obj.System.order
             +C({vE2(1:midx);vE2bar(1:midx);vE1(1:midx)})...
             +C({vE2bar(1:midx);vE1(1:midx);vE2(1:midx)})...
             +C({vE2bar(1:midx);vE2(1:midx);vE1(1:midx)})-gamma2*B*W0110;
-        r1011 = uE1'*tmp4;
         gamma6 = r1011;
         W1011 = solveinveq((Lambda1_E+Lambda2_E+Lambda2bar_E)*Bp-Ap,tmp4-gamma6*B*vE2,solver);
 
@@ -141,8 +140,6 @@ W.W1100 = W1100;
 W.W1010 = W1010;
 W.W1001 = W1001;
 W.W0011 = W0011;
-R.r2000 = r2000;
-R.r1001 = r1001;
 
 % Cubic order terms
 W.W3000 = W3000;
@@ -156,9 +153,6 @@ W.W0021 = W0021;
 W.W1110 = W1110;
 W.W1011 = W1011;
 R.r2100 = r2100;
-R.r0021 = r0021;
-R.r1110 = r1110;
-R.r1011 = r1011;
 
 R.Lambda_E = Lambda_E;
 end
