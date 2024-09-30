@@ -177,7 +177,7 @@ classdef DynamicalSystem < matlab.mixin.SetGetExactNames
             if ~isempty(obj.M)
                 n = length(obj.M);
             else
-                n = length(obj.A)/2;
+                
             end
 
         end

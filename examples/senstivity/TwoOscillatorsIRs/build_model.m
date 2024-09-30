@@ -1,7 +1,7 @@
-function [mass,damp,stiff,fnl,fext] = build_model(c1,c2,b1,b2,f1,f2)
+function [mass,damp,stiff,fnl,fext] = build_model(m,c1,c2,b1,b2,f1,f2)
 
 n = 2;
-mass = eye(n,n);
+mass = m*eye(n,n);
 damp = [c1, 0;
      0, c2];
 stiff = [1 0;0 4];

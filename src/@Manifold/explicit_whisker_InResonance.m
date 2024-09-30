@@ -6,8 +6,8 @@ W  = struct();
 R  = struct();
 Ap = obj.System.A;
 Bp = obj.System.B;
-Q  = obj.System.F{1};
-C  = obj.System.F{2};
+Q  = obj.System.F_semi{2};
+C  = obj.System.F_semi{3};
 midx = obj.System.N;
 if ~obj.System.nl_damp && obj.System.order==2 
     midx = midx/2;  % 2nd order fct handle only takes displacement as input
@@ -37,21 +37,31 @@ switch obj.System.order
         r2000 = uE2'*Q({vE1(1:midx);vE1(1:midx)});
         gamma1 = r2000;
         W2000 = solveinveq(2*Lambda1_E*Bp-Ap,Q({vE1(1:midx);vE1(1:midx)})-gamma1*Bp*vE2,solver);
+        W0200 = conj(W2000);
+
         W0020 = solveinveq(2*Lambda2_E*Bp-Ap,Q({vE2(1:midx);vE2(1:midx)}),solver);
+        W0002 = conj(W0020);
+
         W1100 = solveinveq(2*real(Lambda1_E)*Bp-Ap,...
             Q({vE1(1:midx);vE1bar(1:midx)})+Q({vE1bar(1:midx);vE1(1:midx)}),solver);
+
         W1010 = solveinveq((Lambda1_E+Lambda2_E)*Bp-Ap,...
             Q({vE1(1:midx);vE2(1:midx)})+Q({vE2(1:midx);vE1(1:midx)}),solver);
+        W0101 = conj(W1010);
+
         r1001 = uE1bar'*(Q({vE1(1:midx);vE2bar(1:midx)})+Q({vE2bar(1:midx);vE1(1:midx)}));
         gamma2 = r1001;
         W1001 = solveinveq((Lambda1_E+Lambda2bar_E)*Bp-Ap,...
             Q({vE1(1:midx);vE2bar(1:midx)})+Q({vE2bar(1:midx);vE1(1:midx)})-gamma2*Bp*vE1bar,solver);
+        W0110 = conj(W1001);
+
         W0011 = solveinveq(2*real(Lambda2_E)*Bp-Ap,...
             Q({vE2(1:midx);vE2bar(1:midx)})+Q({vE2bar(1:midx);vE2(1:midx)}),solver);
 
+
         % cubic order terms
         W3000 = solveinveq(3*Lambda1_E*Bp-Ap,Q({vE1(1:midx);W2000(1:midx)})+...
-            Q({W2000(1:midx);vE1(1:midx)})+C({vE1(1:midx);vE1(1:midx);vE1(1:midx)})-gamma1*B*W1010,solver);
+            Q({W2000(1:midx);vE1(1:midx)})+C({vE1(1:midx);vE1(1:midx);vE1(1:midx)})-gamma1*Bp*W1010,solver);
 
         W0030 = solveinveq(3*Lambda2_E*Bp-Ap,Q({vE2(1:midx);W0020(1:midx)})+...
             Q({W0020(1:midx);vE2(1:midx)})+C({vE2(1:midx);vE2(1:midx);vE2(1:midx)}),solver);
@@ -60,7 +70,7 @@ switch obj.System.order
             Q({vE1bar(1:midx);W2000(1:midx)})+Q({W2000(1:midx);vE1bar(1:midx)})+...
             C({vE1(1:midx);vE1(1:midx);vE1bar(1:midx)})+...
             C({vE1(1:midx);vE1bar(1:midx);vE1(1:midx)})+...
-            C({vE1bar(1:midx);vE1(1:midx);vE1(1:midx)})-gamma1*B*W0110;
+            C({vE1bar(1:midx);vE1(1:midx);vE1(1:midx)})-gamma1*Bp*W0110;
         r2100 = uE1'*tmp1;
         gamma3 = r2100;
         W2100 = solveinveq((2*Lambda1_E+Lambda1bar_E)*Bp-Ap,tmp1-gamma3*Bp*vE1,solver);
@@ -69,13 +79,13 @@ switch obj.System.order
             Q({W1010(1:midx);vE1(1:midx)})+Q({W2000(1:midx);vE2(1:midx)})+...
             Q({vE2(1:midx);W2000(1:midx)})+C({vE1(1:midx);vE1(1:midx);vE2(1:midx)})+...
             C({vE1(1:midx);vE2(1:midx);vE1(1:midx)})+...
-            C({vE2(1:midx);vE1(1:midx);vE1(1:midx)})-2*gamma1*B*W0020,solver);
+            C({vE2(1:midx);vE1(1:midx);vE1(1:midx)})-2*gamma1*Bp*W0020,solver);
 
         W2001 = solveinveq((2*Lambda1_E+Lambda2bar_E)*Bp-Ap,Q({vE1(1:midx);W1001(1:midx)})+...
             Q({W1001(1:midx);vE1(1:midx)})+Q({W2000(1:midx);vE2bar(1:midx)})+...
             Q({vE2bar(1:midx);W2000(1:midx)})+C({vE1(1:midx);vE1(1:midx);vE2bar(1:midx)})+...
             C({vE1(1:midx);vE2bar(1:midx);vE1(1:midx)})+...
-            C({vE2bar(1:midx);vE1(1:midx);vE1(1:midx)})-gamma1*B*W0011-gamma2*B*W1100,solver);
+            C({vE2bar(1:midx);vE1(1:midx);vE1(1:midx)})-gamma1*Bp*W0011-gamma2*Bp*W1100,solver);
 
         W1020 = solveinveq((Lambda1_E+2*Lambda2_E)*Bp-Ap,Q({vE2(1:midx);W1010(1:midx)})+...
             Q({W1010(1:midx);vE2(1:midx)})+Q({W0020(1:midx);vE1(1:midx)})+...
@@ -87,7 +97,7 @@ switch obj.System.order
             Q({W0110(1:midx);vE2(1:midx)})+Q({W0020(1:midx);vE1bar(1:midx)})+...
             Q({vE1bar(1:midx);W0020(1:midx)})+C({vE2(1:midx);vE2(1:midx);vE1bar(1:midx)})+...
             C({vE2(1:midx);vE1bar(1:midx);vE2(1:midx)})+...
-            C({vE1bar(1:midx);vE2(1:midx);vE2(1:midx)})-conj(gamma2)*B*W0110,solver);
+            C({vE1bar(1:midx);vE2(1:midx);vE2(1:midx)})-conj(gamma2)*Bp*W0110,solver);
 
         tmp2  = Q({vE2(1:midx);W0011(1:midx)})+...
             Q({W0011(1:midx);vE2(1:midx)})+Q({W0020(1:midx);vE2bar(1:midx)})+...
@@ -96,7 +106,7 @@ switch obj.System.order
             C({vE2bar(1:midx);vE2(1:midx);vE2(1:midx)});
         r0021 = uE2'*tmp2;
         gamma4 = r0021;
-        W0021 = solveinveq((2*Lambda2_E+Lambda2bar_E)*Bp-Ap,tmp2-gamma4*B*vE2,solver);
+        W0021 = solveinveq((2*Lambda2_E+Lambda2bar_E)*Bp-Ap,tmp2-gamma4*Bp*vE2,solver);
 
         tmp3 = Q({vE1(1:midx);W0110(1:midx)})+Q({vE1bar(1:midx);W1010(1:midx)})...
             +Q({vE2(1:midx);W1100(1:midx)})+Q({W0110(1:midx);vE1(1:midx)})...
@@ -106,10 +116,10 @@ switch obj.System.order
             +C({vE1bar(1:midx);vE1(1:midx);vE2(1:midx)})...
             +C({vE1bar(1:midx);vE2(1:midx);vE1(1:midx)})...
             +C({vE2(1:midx);vE1(1:midx);vE1bar(1:midx)})...
-            +C({vE2(1:midx);vE1bar(1:midx);vE1(1:midx)})-2*conj(gamma2)*B*W2000;
+            +C({vE2(1:midx);vE1bar(1:midx);vE1(1:midx)})-2*conj(gamma2)*Bp*W2000;
         r1110 = uE2'*tmp3;
         gamma5 = r1110;
-        W1110 = solveinveq((Lambda1_E+Lambda1bar_E+Lambda2_E)*Bp-Ap,tmp3-gamma5*B*vE2,solver);
+        W1110 = solveinveq((Lambda1_E+Lambda1bar_E+Lambda2_E)*Bp-Ap,tmp3-gamma5*Bp*vE2,solver);
 
         tmp4 = Q({vE1(1:midx);W0011(1:midx)})+Q({vE2(1:midx);W1001(1:midx)})...
             +Q({vE2bar(1:midx);W1010(1:midx)})+Q({W0011(1:midx);vE1(1:midx)})...
@@ -119,10 +129,10 @@ switch obj.System.order
             +C({vE2(1:midx);vE1(1:midx);vE2bar(1:midx)})...
             +C({vE2(1:midx);vE2bar(1:midx);vE1(1:midx)})...
             +C({vE2bar(1:midx);vE1(1:midx);vE2(1:midx)})...
-            +C({vE2bar(1:midx);vE2(1:midx);vE1(1:midx)})-gamma2*B*W0110;
+            +C({vE2bar(1:midx);vE2(1:midx);vE1(1:midx)})-gamma2*Bp*W0110;
         r1011 = uE1'*tmp4;
         gamma6 = r1011;
-        W1011 = solveinveq((Lambda1_E+Lambda2_E+Lambda2bar_E)*Bp-Ap,tmp4-gamma6*B*vE2,solver);
+        W1011 = solveinveq((Lambda1_E+Lambda2_E+Lambda2bar_E)*Bp-Ap,tmp4-gamma6*Bp*vE2,solver);
 
 
 
