@@ -1,24 +1,24 @@
 function  choose_E(obj,tangentModes)
-%CHOOSE_E This function defines the master modal subspace and performs
-%resonance analysis
+    %CHOOSE_E This function defines the master modal subspace and performs
+    %resonance analysis
 
-if isempty(obj.System.spectrum)
-    [~,~,~] = obj.System.linear_spectral_analysis();
-end
-% tangent eigenvalues
-nLambda = numel(obj.System.spectrum.Lambda);
-lambda_M = obj.System.spectrum.Lambda(tangentModes);
-% normal eigenvalues
-normalModes = setdiff(1:nLambda,tangentModes);
-lambda_S = obj.System.spectrum.Lambda(normalModes);
-
-% define subspace E
-obj.E.spectrum = lambda_M;
-obj.E.basis = obj.System.spectrum.V(:,tangentModes);
-obj.E.adjointBasis = obj.System.spectrum.W(:,tangentModes);
-
-
-obj.resonance = resonance_analysis(lambda_M,lambda_S,obj.Options.reltol);
+    if isempty(obj.System.spectrum)
+        [~,~,~] = obj.System.linear_spectral_analysis();
+    end
+    % tangent eigenvalues
+    nLambda = numel(obj.System.spectrum.Lambda);
+    lambda_M = obj.System.spectrum.Lambda(tangentModes);
+    % normal eigenvalues
+    normalModes = setdiff(1:nLambda,tangentModes);
+    lambda_S = obj.System.spectrum.Lambda(normalModes);
+    
+    % define subspace E
+    obj.E.spectrum = lambda_M;
+    obj.E.basis = obj.System.spectrum.V(:,tangentModes);
+    obj.E.adjointBasis = obj.System.spectrum.W(:,tangentModes);
+    
+    
+    obj.resonance = resonance_analysis(lambda_M,lambda_S,obj.Options.reltol);
 
 end
 

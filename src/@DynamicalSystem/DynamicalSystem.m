@@ -207,9 +207,9 @@ classdef DynamicalSystem < matlab.mixin.SetGetExactNames
                             [fnl_t] = multi_index_to_tensor(obj.fnl(j-1).coeffs,obj.fnl(j-1).ind);
                             subsj = fnl_t.subs;
                             valsj = -fnl_t.vals;
-                            if obj.order==1
-                                valsj = -valsj;
-                            end
+%                             if obj.order==1
+%                                 valsj = -valsj;
+%                             end
                             F{j} = sptensor(subsj,valsj,sizej);
                         end
                     end

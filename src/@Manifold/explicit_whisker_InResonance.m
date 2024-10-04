@@ -37,17 +37,17 @@ switch obj.System.order
         r2000 = uE2'*Q({vE1(1:midx);vE1(1:midx)});
         gamma1 = r2000;
         W2000 = solveinveq(2*Lambda1_E*Bp-Ap,Q({vE1(1:midx);vE1(1:midx)})-gamma1*Bp*vE2,solver);
-        W0200 = conj(W2000);
+%         W0200 = conj(W2000);
 
         W0020 = solveinveq(2*Lambda2_E*Bp-Ap,Q({vE2(1:midx);vE2(1:midx)}),solver);
-        W0002 = conj(W0020);
+%         W0002 = conj(W0020);
 
         W1100 = solveinveq(2*real(Lambda1_E)*Bp-Ap,...
             Q({vE1(1:midx);vE1bar(1:midx)})+Q({vE1bar(1:midx);vE1(1:midx)}),solver);
 
         W1010 = solveinveq((Lambda1_E+Lambda2_E)*Bp-Ap,...
             Q({vE1(1:midx);vE2(1:midx)})+Q({vE2(1:midx);vE1(1:midx)}),solver);
-        W0101 = conj(W1010);
+%         W0101 = conj(W1010);
 
         r1001 = uE1bar'*(Q({vE1(1:midx);vE2bar(1:midx)})+Q({vE2bar(1:midx);vE1(1:midx)}));
         gamma2 = r1001;
@@ -97,7 +97,7 @@ switch obj.System.order
             Q({W0110(1:midx);vE2(1:midx)})+Q({W0020(1:midx);vE1bar(1:midx)})+...
             Q({vE1bar(1:midx);W0020(1:midx)})+C({vE2(1:midx);vE2(1:midx);vE1bar(1:midx)})+...
             C({vE2(1:midx);vE1bar(1:midx);vE2(1:midx)})+...
-            C({vE1bar(1:midx);vE2(1:midx);vE2(1:midx)})-conj(gamma2)*Bp*W0110,solver);
+            C({vE1bar(1:midx);vE2(1:midx);vE2(1:midx)})-conj(gamma2)*Bp*W1010,solver);
 
         tmp2  = Q({vE2(1:midx);W0011(1:midx)})+...
             Q({W0011(1:midx);vE2(1:midx)})+Q({W0020(1:midx);vE2bar(1:midx)})+...
@@ -132,7 +132,7 @@ switch obj.System.order
             +C({vE2bar(1:midx);vE2(1:midx);vE1(1:midx)})-gamma2*Bp*W0110;
         r1011 = uE1'*tmp4;
         gamma6 = r1011;
-        W1011 = solveinveq((Lambda1_E+Lambda2_E+Lambda2bar_E)*Bp-Ap,tmp4-gamma6*Bp*vE2,solver);
+        W1011 = solveinveq((Lambda1_E+Lambda2_E+Lambda2bar_E)*Bp-Ap,tmp4-gamma6*Bp*vE1,solver);
 
 
 
