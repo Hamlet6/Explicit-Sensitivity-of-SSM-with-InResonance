@@ -18,6 +18,11 @@ assert(numel(Lambda_E)==4,'current implementation only supports four-dimensional
 idx1 = 1; idx2 = 3;
 if imag(Lambda_E(idx1))<0; idx1=2; end
 if imag(Lambda_E(idx2))<0; idx2=4; end
+% if imag(Lambda_E(idx1))>imag(Lambda_E(idx2))
+%     temp = idx1;
+%     idx1 = idx2;
+%     idx2 = temp;
+% end
 Lambda1_E = Lambda_E(idx1); Lambda1bar_E = conj(Lambda1_E);
 Lambda2_E = Lambda_E(idx2); Lambda2bar_E = conj(Lambda2_E);
 vE1  = obj.E.basis(:,idx1); vE1bar = conj(vE1);

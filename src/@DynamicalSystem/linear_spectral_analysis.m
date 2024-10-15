@@ -62,10 +62,12 @@ else
     else
         % right eigenvectors
         [V, Dv] = eigs(obj.A,obj.B,E_max,'smallestabs');
+       % [Lambda_sorted,I] = sort(diag(Dv),'ascend','ComparisonMethod','real');
         [Lambda_sorted,I] = sort(diag(Dv),'descend','ComparisonMethod','real');
         % further sort if real parts are equal (very close)
         [Lambda_sorted,II] = sort_close_real_different_imag(Lambda_sorted);
         LAMBDA = diag(Lambda_sorted);
+        %V = V(:,I);
         V = V(:,I(II));
         % rescale V w.r.t mass matrix
         if ~isempty(obj.M)
@@ -122,8 +124,16 @@ if ~iscolumn(Lambda)
 end
 % sort eigenvalues in the descending order of real parts, incase of tie by
 % ascending order of magnitude of imaginary parts
-[Lambda_sorted,I] = sortrows([real(Lambda), abs(imag(Lambda)) sign(imag(Lambda))],[1 2],{'descend' 'ascend'});
-D = Lambda_sorted(:,1) + 1i * Lambda_sorted(:,2).*Lambda_sorted(:,3);
+%[Lambda_sorted,I] = sortrows([real(Lambda), abs(imag(Lambda)) sign(imag(Lambda))],[1 2],{'descend' 'ascend'});
+if max(abs(real(Lambda)))-min(abs(real(Lambda)))>1e-6
+    [Lambda_sorted,I] = sortrows([real(Lambda), abs(imag(Lambda)) sign(imag(Lambda))],[1 2],{'descend' 'ascend'});
+    D = Lambda_sorted(:,1) + 1i * Lambda_sorted(:,2).*Lambda_sorted(:,3);
+    
+else
+    [~,I] = sortrows([abs(imag(Lambda)),sign(imag(Lambda))],[1 2],{'ascend' 'descend'});
+    D = Lambda(I);
+end
+%D = Lambda_sorted(:,1) + 1i * Lambda_sorted(:,2).*Lambda_sorted(:,3);
 D = diag(D);
 % arrange eigenvectors accordingly
 V = V(:,I);
@@ -229,7 +239,8 @@ for k=1:numel(idgap)-1
    if k>1; ida=ida+1; end
    idb = idgap(k+1);
    tmp = ida:idb;
-   [~,idab] = sort(imagx(tmp),'descend');
+   [~,idab] = sort(abs(imagx(tmp)),'ascend');
+    %[~,idab] = sort(imagx(tmp),'descend');
    idx = [idx tmp(idab)];
 end
 y = x(idx);
